@@ -169,8 +169,9 @@ namespace ЛР5
                 {
                     for (int k = 0; k < alternativeCnt; k++)
                     {
-                        StepTwoMatr[j][i, k] = Func(j, Convert.ToDouble(dgv2[k, i].Value));
-                        grid[k, i].Value = Func(j, Convert.ToDouble(dgv2[k, i].Value));
+                        var val = Func(j, Convert.ToDouble(dgv2[k, i].Value));
+                        StepTwoMatr[j][i, k] = val;
+                        grid[k, i].Value = Math.Round(val, 3);
                     }
                 }
             }
@@ -227,7 +228,7 @@ namespace ЛР5
                         return 0;
 
                     if (d > 0 && d <= s)
-                        return 0.5;
+                        return d/s;
 
                     if (d > s)
                         return 1;
@@ -238,7 +239,7 @@ namespace ЛР5
                         return 1;
 
                     if (d > 0 && d <= s)
-                        return 0.5;
+                        return d/s;
 
                     if (d > s)
                         return 0;

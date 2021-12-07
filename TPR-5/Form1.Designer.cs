@@ -69,15 +69,14 @@ namespace ЛР5
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(133, 42);
-            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.numericUpDown1.Location = new System.Drawing.Point(166, 57);
             this.numericUpDown1.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(57, 23);
+            this.numericUpDown1.Size = new System.Drawing.Size(65, 27);
             this.numericUpDown1.TabIndex = 2;
             this.numericUpDown1.Value = new decimal(new int[] {
             4,
@@ -87,15 +86,14 @@ namespace ЛР5
             // 
             // numericUpDown2
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(133, 70);
-            this.numericUpDown2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.numericUpDown2.Location = new System.Drawing.Point(166, 93);
             this.numericUpDown2.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(57, 23);
+            this.numericUpDown2.Size = new System.Drawing.Size(65, 27);
             this.numericUpDown2.TabIndex = 3;
             this.numericUpDown2.Value = new decimal(new int[] {
             3,
@@ -105,10 +103,9 @@ namespace ЛР5
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(488, 462);
-            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button2.Location = new System.Drawing.Point(558, 616);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(639, 37);
+            this.button2.Size = new System.Drawing.Size(730, 49);
             this.button2.TabIndex = 5;
             this.button2.Text = "Рассчитать";
             this.button2.UseVisualStyleBackColor = true;
@@ -117,18 +114,18 @@ namespace ЛР5
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 44);
+            this.label1.Location = new System.Drawing.Point(11, 59);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(117, 15);
+            this.label1.Size = new System.Drawing.Size(149, 20);
             this.label1.TabIndex = 6;
             this.label1.Text = "Кол-во альтернатив";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 72);
+            this.label2.Location = new System.Drawing.Point(11, 96);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(106, 15);
+            this.label2.Size = new System.Drawing.Size(135, 20);
             this.label2.TabIndex = 7;
             this.label2.Text = "Кол-во критериев";
             // 
@@ -139,12 +136,11 @@ namespace ЛР5
             this.dgwLeft.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.dgwLeft.BackgroundColor = System.Drawing.Color.White;
             this.dgwLeft.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgwLeft.Location = new System.Drawing.Point(11, 115);
-            this.dgwLeft.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dgwLeft.Location = new System.Drawing.Point(13, 153);
             this.dgwLeft.Name = "dgwLeft";
             this.dgwLeft.RowHeadersWidth = 51;
             this.dgwLeft.RowTemplate.Height = 29;
-            this.dgwLeft.Size = new System.Drawing.Size(445, 384);
+            this.dgwLeft.Size = new System.Drawing.Size(509, 512);
             this.dgwLeft.TabIndex = 8;
             // 
             // dgw2
@@ -153,23 +149,21 @@ namespace ЛР5
             this.dgw2.AllowUserToDeleteRows = false;
             this.dgw2.BackgroundColor = System.Drawing.Color.White;
             this.dgw2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgw2.Location = new System.Drawing.Point(488, 162);
-            this.dgw2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dgw2.Location = new System.Drawing.Point(558, 216);
             this.dgw2.Name = "dgw2";
             this.dgw2.ReadOnly = true;
             this.dgw2.RowHeadersWidth = 51;
             this.dgw2.RowTemplate.Height = 29;
-            this.dgw2.Size = new System.Drawing.Size(640, 284);
+            this.dgw2.Size = new System.Drawing.Size(731, 379);
             this.dgw2.TabIndex = 9;
             // 
             // cbCriteria
             // 
             this.cbCriteria.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbCriteria.FormattingEnabled = true;
-            this.cbCriteria.Location = new System.Drawing.Point(6, 45);
-            this.cbCriteria.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.cbCriteria.Location = new System.Drawing.Point(7, 60);
             this.cbCriteria.Name = "cbCriteria";
-            this.cbCriteria.Size = new System.Drawing.Size(136, 23);
+            this.cbCriteria.Size = new System.Drawing.Size(155, 28);
             this.cbCriteria.TabIndex = 10;
             this.cbCriteria.SelectedIndexChanged += new System.EventHandler(this.cbCriteria_SelectedIndexChanged);
             // 
@@ -177,29 +171,26 @@ namespace ЛР5
             // 
             this.cbType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbType.FormattingEnabled = true;
-            this.cbType.Location = new System.Drawing.Point(419, 44);
-            this.cbType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.cbType.Location = new System.Drawing.Point(479, 59);
             this.cbType.Name = "cbType";
-            this.cbType.Size = new System.Drawing.Size(196, 23);
+            this.cbType.Size = new System.Drawing.Size(223, 28);
             this.cbType.TabIndex = 11;
             // 
             // cbFunction
             // 
             this.cbFunction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbFunction.FormattingEnabled = true;
-            this.cbFunction.Location = new System.Drawing.Point(253, 44);
-            this.cbFunction.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.cbFunction.Location = new System.Drawing.Point(289, 59);
             this.cbFunction.Name = "cbFunction";
-            this.cbFunction.Size = new System.Drawing.Size(153, 23);
+            this.cbFunction.Size = new System.Drawing.Size(174, 28);
             this.cbFunction.TabIndex = 12;
             this.cbFunction.SelectedIndexChanged += new System.EventHandler(this.cbFunction_SelectedIndexChanged);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(320, 61);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button1.Location = new System.Drawing.Point(366, 81);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(136, 36);
+            this.button1.Size = new System.Drawing.Size(155, 48);
             this.button1.TabIndex = 15;
             this.button1.Text = "Создать таблицу";
             this.button1.UseVisualStyleBackColor = true;
@@ -207,10 +198,9 @@ namespace ЛР5
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(506, 91);
-            this.button3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button3.Location = new System.Drawing.Point(578, 121);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(109, 31);
+            this.button3.Size = new System.Drawing.Size(125, 41);
             this.button3.TabIndex = 16;
             this.button3.Text = "Задать";
             this.button3.UseVisualStyleBackColor = true;
@@ -219,54 +209,54 @@ namespace ЛР5
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 28);
+            this.label3.Location = new System.Drawing.Point(7, 37);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 15);
+            this.label3.Size = new System.Drawing.Size(77, 20);
             this.label3.TabIndex = 17;
             this.label3.Text = "Критерий";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(151, 27);
+            this.label4.Location = new System.Drawing.Point(173, 36);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(26, 15);
+            this.label4.Size = new System.Drawing.Size(33, 20);
             this.label4.TabIndex = 18;
             this.label4.Text = "Вес";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(253, 27);
+            this.label5.Location = new System.Drawing.Point(289, 36);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(55, 15);
+            this.label5.Size = new System.Drawing.Size(69, 20);
             this.label5.TabIndex = 19;
             this.label5.Text = "Функция";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(419, 27);
+            this.label6.Location = new System.Drawing.Point(479, 36);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(27, 15);
+            this.label6.Size = new System.Drawing.Size(35, 20);
             this.label6.TabIndex = 20;
             this.label6.Text = "Тип";
             // 
             // lblQ
             // 
             this.lblQ.AutoSize = true;
-            this.lblQ.Location = new System.Drawing.Point(6, 79);
+            this.lblQ.Location = new System.Drawing.Point(7, 105);
             this.lblQ.Name = "lblQ";
-            this.lblQ.Size = new System.Drawing.Size(16, 15);
+            this.lblQ.Size = new System.Drawing.Size(20, 20);
             this.lblQ.TabIndex = 21;
             this.lblQ.Text = "Q";
             // 
             // lblS
             // 
             this.lblS.AutoSize = true;
-            this.lblS.Location = new System.Drawing.Point(79, 79);
+            this.lblS.Location = new System.Drawing.Point(90, 105);
             this.lblS.Name = "lblS";
-            this.lblS.Size = new System.Drawing.Size(13, 15);
+            this.lblS.Size = new System.Drawing.Size(17, 20);
             this.lblS.TabIndex = 23;
             this.lblS.Text = "S";
             // 
@@ -276,26 +266,28 @@ namespace ЛР5
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.открытьToolStripMenuItem,
             this.сохранитьToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1139, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 3, 0, 3);
+            this.menuStrip1.Size = new System.Drawing.Size(1302, 30);
             this.menuStrip1.TabIndex = 24;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // открытьToolStripMenuItem
             // 
             this.открытьToolStripMenuItem.Name = "открытьToolStripMenuItem";
-            this.открытьToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.открытьToolStripMenuItem.Size = new System.Drawing.Size(81, 24);
             this.открытьToolStripMenuItem.Text = "Открыть";
             this.открытьToolStripMenuItem.Click += new System.EventHandler(this.Load_Click);
             // 
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(97, 24);
             this.сохранитьToolStripMenuItem.Text = "Сохранить";
             this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.Save_Click);
             // 
@@ -314,9 +306,11 @@ namespace ЛР5
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Location = new System.Drawing.Point(488, 27);
+            this.groupBox1.Location = new System.Drawing.Point(558, 36);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(639, 130);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox1.Size = new System.Drawing.Size(730, 173);
             this.groupBox1.TabIndex = 25;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Задание критерия";
@@ -324,7 +318,8 @@ namespace ЛР5
             // nudS
             // 
             this.nudS.DecimalPlaces = 2;
-            this.nudS.Location = new System.Drawing.Point(79, 97);
+            this.nudS.Location = new System.Drawing.Point(90, 129);
+            this.nudS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.nudS.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -336,13 +331,14 @@ namespace ЛР5
             0,
             -2147483648});
             this.nudS.Name = "nudS";
-            this.nudS.Size = new System.Drawing.Size(67, 23);
+            this.nudS.Size = new System.Drawing.Size(77, 27);
             this.nudS.TabIndex = 21;
             // 
             // nudQ
             // 
             this.nudQ.DecimalPlaces = 2;
-            this.nudQ.Location = new System.Drawing.Point(6, 97);
+            this.nudQ.Location = new System.Drawing.Point(7, 129);
+            this.nudQ.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.nudQ.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -354,7 +350,7 @@ namespace ЛР5
             0,
             -2147483648});
             this.nudQ.Name = "nudQ";
-            this.nudQ.Size = new System.Drawing.Size(67, 23);
+            this.nudQ.Size = new System.Drawing.Size(77, 27);
             this.nudQ.TabIndex = 21;
             // 
             // nudWeight
@@ -365,22 +361,23 @@ namespace ЛР5
             0,
             0,
             65536});
-            this.nudWeight.Location = new System.Drawing.Point(151, 45);
+            this.nudWeight.Location = new System.Drawing.Point(173, 60);
+            this.nudWeight.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.nudWeight.Maximum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.nudWeight.Name = "nudWeight";
-            this.nudWeight.Size = new System.Drawing.Size(96, 23);
+            this.nudWeight.Size = new System.Drawing.Size(110, 27);
             this.nudWeight.TabIndex = 21;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1139, 510);
+            this.ClientSize = new System.Drawing.Size(1302, 680);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.dgw2);
@@ -392,7 +389,6 @@ namespace ЛР5
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "Метод PROMETHEE";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
