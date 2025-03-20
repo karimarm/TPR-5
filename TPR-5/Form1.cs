@@ -10,40 +10,24 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ЛР5
+namespace LR5
 {
     public partial class Form1 : Form
     {
         public static int alternativeCnt; //Кол-во альтернатив
         public static int critCnt; //Кол-во критериев
-        public static double[,] grid1;
-        public static string[,] grid2;
-        public int[,] arr;
-        List<double[,]> table1;
-        List<double[,]> table2;
-        List<double[,]> table3;
-        string value;
 
         public Form1()
         {
             InitializeComponent();
-
-            var list = new List<string>();
-            list.Add("Обычная функция");
-            list.Add("U-образная функция");
-            list.Add("V-образная функция");
-            list.Add("Уровневая функция");
-            list.Add("V-образная функция с порогами безразличия");
-            cbFunction.Items.AddRange(list.ToArray());
-
-            cbType.Items.Add("Положительно направленный");
-            cbType.Items.Add("Отрицательно направленный");
-            
             onCreateTable(null, null);
         }
 
+
+        // Сохранение в файл
         private void Save_Click(object sender, EventArgs e)
         {
+            // Получение пути сохранения
             saveFileDialog1.Filter = "Файл Excel | *.xlsx";
             if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
                 return;
@@ -52,86 +36,39 @@ namespace ЛР5
 
             using (ExcelPackage excelPackage = new ExcelPackage())
             {
-                excelPackage.Workbook.Properties.Author = "VDWWD";
                 excelPackage.Workbook.Properties.Title = "Документ";
-                excelPackage.Workbook.Properties.Subject = "Данные";
-                excelPackage.Workbook.Properties.Created = DateTime.Now;
 
                 ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Лист 1");
 
-                worksheet.Cells[1, 1].Value = "Кол-во альтернатив";
-                worksheet.Cells[1, 2].Value = alternativeCnt;
-                worksheet.Cells[1, 4].Value = "Кол-во критериев";
-                worksheet.Cells[1, 5].Value = critCnt;
+                int curRow = 1; // Индекс текущей строки
 
-                for (int i = 0; i < alternativeCnt; i++)
+                // Запись альтернатив и критериев
+                worksheet.Cells[curRow, 1].Value = "Кол-во альтернатив:";
+                worksheet.Cells[curRow++, 2].Value = Convert.ToInt32(alternativeCnt);
+                worksheet.Cells[curRow, 1].Value = "Кол-во критериев:";
+                worksheet.Cells[curRow, 2].Value = Convert.ToInt32(critCnt);
+                curRow += 2;
+
+                // Запись таблицы критериев
+                worksheet.Cells[curRow++, 1].Value = "Таблица критериев:";
+                for (int row = 0; row < dgwСrit.Rows.Count; row++)
                 {
-                    for (int j = 0; j < critCnt; j++)
-                    {
-                        worksheet.Cells[3 + i, 1 + j].Value = grid1[i, j];
-                    }
+                    for (int col = 0; col < dgwСrit.Columns.Count; col++)
+                        worksheet.Cells[curRow, col + 1].Value = Convert.ToInt32(dgwСrit.Rows[row].Cells[col].Value);
+                    curRow++;
+                }
+                curRow++;
+
+                // Запись таблицы функций
+                worksheet.Cells[curRow++, 1].Value = "Таблица функций: ";
+                for (int row = 0; row < dgwFunc.Rows.Count; row++)
+                {
+                    for (int col = 0; col < dgwFunc.Columns.Count; col++)
+                        worksheet.Cells[curRow, col + 1].Value = dgwFunc.Rows[row].Cells[col].Value;
+                    curRow++;
                 }
 
-                worksheet.Cells[5 + alternativeCnt, 1].Value = "Функции предпочтений";
-
-                for (int i = 0; i < critCnt; i++)
-                {
-                    for (int j = 0; j < 5; j++)
-                    {
-                        worksheet.Cells[8 + i, 1 + j].Value = grid2[i, j];
-                    }
-                }
-
-                int current = 8 + alternativeCnt + critCnt;
-                worksheet.Cells[current, 1].Value = "Шаг 1";
-                current = current + 2;
-                int right = 1;
-
-                for (int j = 0; j < critCnt; j++)
-                {
-                    for (int i = 0; i < alternativeCnt; i++)
-                    {
-                        for (int k = 0; k < alternativeCnt; k++)
-                        {
-                            worksheet.Cells[current + i, right + k].Value = table1[j][i, k];
-                        }
-                    }
-                    right = right + alternativeCnt + 3;
-                }
-
-                current = current + alternativeCnt + 2;
-                worksheet.Cells[current, 1].Value = "Шаг 2";
-                current = current + 2;
-                right = 1;
-
-                for (int j = 0; j < critCnt; j++)
-                {
-                    for (int i = 0; i < alternativeCnt; i++)
-                    {
-                        for (int k = 0; k < alternativeCnt; k++)
-                        {
-                            worksheet.Cells[current + i, right + k].Value = table2[j][i, k];
-                        }
-                    }
-                    right = right + alternativeCnt + 3;
-                }
-
-                current = current + alternativeCnt + 2;
-                worksheet.Cells[current, 1].Value = "Шаг 3";
-                current = current + 2;
-
-                for (int i = 0; i < alternativeCnt + 1; i++)
-                {
-                    for (int k = 0; k < alternativeCnt + 1; k++)
-                    {
-                        worksheet.Cells[current + i, k + 1].Value = table3[0][i, k];
-                    }
-                }
-
-                current = current + alternativeCnt + 2;
-
-                worksheet.Cells[current, 1].Value = value;
-
+                // Попытка записи файла
                 try
                 {
                     FileInfo fi = new FileInfo(saveFileDialog1.FileName);
@@ -148,85 +85,83 @@ namespace ЛР5
             }
         }
 
+
+        // Загрузка из файла
         private void Load_Click(object sender, EventArgs e)
         {
+            // Получение пути файла
             openFileDialog1.FileName = null;
             if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
                 return;
 
             ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-            FileInfo fi = new FileInfo(openFileDialog1.FileName);
+            FileInfo File = new FileInfo(openFileDialog1.FileName);
 
-            using (ExcelPackage excelPackage = new ExcelPackage(fi))
+            using (ExcelPackage excelPackage = new ExcelPackage(File))
             {
                 ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
-                //try
+
+                dgwСrit.Columns.Clear();
+                dgwСrit.Rows.Clear();
+
+                dgwFunc.Rows.Clear();
+
+                int curRow = 1; // Индекс текущей строки
+
+                // Загрузка количества альтернатив и критериев
+                alternativeCnt = Convert.ToInt32(worksheet.Cells[curRow++, 2].Value);
+                critCnt = Convert.ToInt32(worksheet.Cells[curRow, 2].Value);
+
+                nudAlternative.Value = alternativeCnt;
+                nudCrit.Value = critCnt;
+
+                curRow += 3;
+
+                // Загрузка таблицы критериев
+                for (int i = 0; i < critCnt; i++)
                 {
-
-                    dgwLeft.Columns.Clear();
-                    dgwLeft.Rows.Clear();
-
-                    alternativeCnt = Convert.ToInt32(worksheet.Cells[1, 2].Value);
-                    critCnt = Convert.ToInt32(worksheet.Cells[1, 5].Value);
-                    grid1 = new double[alternativeCnt, critCnt];
-
-                    for (int i = 0; i < critCnt; i++)
-                    {
-                        var column = new DataGridViewColumn();
-                        column.HeaderText = Convert.ToString(i + 1) + " критерий";
-                        column.SortMode = DataGridViewColumnSortMode.NotSortable;
-                        column.CellTemplate = new DataGridViewTextBoxCell();
-                        column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-
-                        dgwLeft.Columns.Add(column);
-                    }
-
-                    for (int i = 0; i < alternativeCnt; i++)
-                    {
-                        DataGridViewRow row = new DataGridViewRow();
-                        row.HeaderCell.Value = "a" + Convert.ToString(i + 1);
-                        dgwLeft.Rows.Add(row);
-                    }
-
-                    DataGridView dgv = dgwLeft;
-                    arr = new int[alternativeCnt, critCnt];
-
-                    for (int i = 0; i < alternativeCnt; i++)
-                    {
-                        for (int j = 0; j < critCnt; j++)
-                        {
-                            arr[i, j] = Convert.ToInt32(worksheet.Cells[3 + i, 1 + j].Value);
-                            dgv[j, i].Value = arr[i, j];
-                            grid1[i, j] = arr[i, j];
-                        }
-                    }
-
-
-                    CreateRightTable();
-
-                    for (int i = 0; i < 5; i++)
-                    {
-                        for (int j = 0; j < critCnt; j++)
-                        {
-                            var value = worksheet.Cells[8 + j, 1 + i].Value;
-                            dgw2.Rows[j].Cells[i].Value = value;
-                        }
-                    }
-
-                    excelPackage.Save();
+                    var column = createDataGridViewColumn(Convert.ToString(i + 1) + " критерий");
+                    dgwСrit.Columns.Add(column);
                 }
-                //catch
-                //{
-                //    MessageBox.Show(
-                //    "Открыт Excel файл или неверный формат",
-                //    "Ошибка загрузки файла!"
-                //    );
-                //    return;
-                //}
+
+                for (int i = 0; i < alternativeCnt; i++)
+                {
+                    DataGridViewRow row = new DataGridViewRow();
+                    row.HeaderCell.Value = "a" + Convert.ToString(i + 1);
+                    dgwСrit.Rows.Add(row);
+
+                    for (int j = 0; j < critCnt; j++)
+                    {
+                        var value = Convert.ToInt32(worksheet.Cells[curRow, j + 1].Value);
+                        dgwСrit.Rows[i].Cells[j].Value = value;
+                    }
+
+                    curRow++;
+                }
+                curRow += 2;
+
+                // Загрузка таблицы функций
+                for (int i = 0; i < critCnt; i++)
+                {
+                    DataGridViewRow row = new DataGridViewRow();
+                    row.HeaderCell.Value = Convert.ToString(i + 1) + " критерий";
+                    dgwFunc.Rows.Add(row);
+
+                    for (int j = 0; j < 4; j++)
+                    {
+                        var value = worksheet.Cells[curRow, j + 1].Value;
+                        dgwFunc.Rows[i].Cells[j].Value = value;
+                    }
+
+                    curRow++;
+                }
+
+                excelPackage.Save();
             }
         }
 
-        //выбрать критерий
+
+        // Заполнение списка выбора критериев
         private void CreateCriterias()
         {
             cbCriteria.Items.Clear();
@@ -238,185 +173,150 @@ namespace ЛР5
             cbCriteria.Items.AddRange(list.ToArray());
         }
 
-        // задать критерий
-        private void button3_Click(object sender, EventArgs e)
-        {
-            DataGridView dgv = dgw2;
-            dgv[0, cbCriteria.SelectedIndex].Value = cbFunction.SelectedItem.ToString();
-            dgv[1, cbCriteria.SelectedIndex].Value = cbType.SelectedItem.ToString();
-            if (nudQ.Visible)
-                dgv[2, cbCriteria.SelectedIndex].Value = nudQ.Value.ToString();
 
-            if (nudS.Visible)
-                dgv[3, cbCriteria.SelectedIndex].Value = nudS.Value.ToString();
-            dgv[4, cbCriteria.SelectedIndex].Value = nudWeight.Value.ToString();
+        // Определение параметров критерия
+        private void btnSetCrit_Click(object sender, EventArgs e)
+        {
+            DataGridView dgv = dgwFunc;
+            int critIndex = cbCriteria.SelectedIndex;
+
+            dgv[0, critIndex].Value = cbFunction.SelectedItem;
+            dgv[1, critIndex].Value = (nudQ.Visible ? nudQ.Value : 0);
+            dgv[2, critIndex].Value = (nudS.Visible ? nudS.Value : 0);
+            dgv[3, critIndex].Value = nudWeight.Value;
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            grid1 = new double[alternativeCnt, critCnt];
-            grid2 = new string[critCnt, 5];
 
+        // Открытие формы расчета шагов
+        private void btnCalculate_Click(object sender, EventArgs e)
+        {
             double sumCrit = 0;
-            for (int i = 0; i < critCnt; i++)
-                for (int j = 0; j < 5; j++)
+            for (int row = 0; row < dgwFunc.Rows.Count; row++)
+                for (int col = 0; col < dgwFunc.Columns.Count; col++)
                 {
-                    if (j == 0 && dgw2[j, i].Value == null)
+                    if (dgwFunc.Rows[row].Cells[col].Value == null)
                     {
                         MessageBox.Show("Не все критерии настроены", "Ошибка");
                         return;
                     }
 
-                    if (j == 4)
+                    if (col == 3)
                     {
-                        sumCrit += Convert.ToDouble(dgw2[j, i].Value.ToString());
+                        sumCrit += Convert.ToDouble(dgwFunc.Rows[row].Cells[col].Value);
                     }
-
-                    grid2[i, j] = dgw2[j, i].Value?.ToString();
                 }
-            
+
             if (sumCrit != 1)
             {
-                MessageBox.Show("Сумма весов критериев отлична от 1", "Ошибка");
+                MessageBox.Show("Сумма весов критериев отлична от 1!", "Ошибка");
                 return;
             }
 
-
-            for (int i = 0; i < alternativeCnt; i++)
-                for (int j = 0; j < critCnt; j++)
-                    grid1[i, j] = Convert.ToDouble(dgwLeft[j, i].Value.ToString());
-
-
-            Form2 f2 = new Form2(alternativeCnt, critCnt, grid1, grid2);
+            Form2 f2 = new Form2(dgwСrit, dgwFunc);
             f2.ShowDialog();
-            table1 = f2.GetStepOne();
-            table2 = f2.GetStepTwo();
-            table3 = f2.GetStepThree();
-            value = f2.GetStepFour();
         }
 
-        // формируем таблицу
+
+        // Формирование таблицы
         private void onCreateTable(object sender, EventArgs e)
         {
-            dgwLeft.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            
-            dgwLeft.Columns.Clear();
-            dgwLeft.Rows.Clear();
+            // Очистка строк и колонок таблицы
+            dgwСrit.Columns.Clear();
+            dgwСrit.Rows.Clear();
 
-            if (numericUpDown1.Text != "")
-                alternativeCnt = Convert.ToInt32(numericUpDown1.Text);
-            else
-                alternativeCnt = 1;
-            if (numericUpDown2.Text != "")
-                critCnt = Convert.ToInt32(numericUpDown2.Text);
-            else
-                critCnt = 1;
+            // Задание количества альтернатив и критериев
+            alternativeCnt = (int)nudAlternative.Value;
+            critCnt = (int)nudCrit.Value;
 
-            for (int i = 0; i < critCnt; i++)
+            // Создание колонок таблицы
+            for (int i = 1; i <= critCnt; i++)
             {
-                var column = new DataGridViewColumn();
-                column.HeaderText = Convert.ToString(i + 1) + " критерий";
-                column.SortMode = DataGridViewColumnSortMode.NotSortable;
-                column.CellTemplate = new DataGridViewTextBoxCell();
-                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-
-                dgwLeft.Columns.Add(column);
+                var column = createDataGridViewColumn(Convert.ToString(i) + " критерий");
+                dgwСrit.Columns.Add(column); // Добавление колонки
             }
 
+            // Создание строк таблицы
             for (int i = 0; i < alternativeCnt; i++)
             {
-                DataGridViewRow row = new DataGridViewRow();
-                row.HeaderCell.Value = "a" + Convert.ToString(i + 1);
+                DataGridViewRow row = new DataGridViewRow();  // Создание новой строки
+                row.HeaderCell.Value = "a" + Convert.ToString(i + 1); // Заголовок строки
 
-                dgwLeft.Rows.Add(row);
+                dgwСrit.Rows.Add(row); // Добавление строки
             }
 
-            for (int i = 0; i < alternativeCnt; i++)
-                for (int j = 0; j < critCnt; j++)
-                    dgwLeft.Rows[i].Cells[j].Value = "0";
+            // Заполнение таблицы нулями
+            for (int row = 0; row < alternativeCnt; row++)
+                for (int col = 0; col < critCnt; col++)
+                    dgwСrit.Rows[row].Cells[col].Value = 0;
 
             CreateCriterias();
+
             cbCriteria.SelectedIndex = 0;
             cbFunction.SelectedIndex = 0;
-            cbType.SelectedIndex = 0;
+            //cbType.SelectedIndex = 0;
 
-            // таблица критериев
-            CreateRightTable();
+            // Таблица критериев
+            CreateFuncTable();
         }
 
-        void CreateRightTable()
+
+        // Заполнение таблицы функций
+        void CreateFuncTable()
         {
-            dgw2.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
+            dgwFunc.Rows.Clear(); // Очистка строк таблицы
 
-            dgw2.Columns.Clear();
-            dgw2.Rows.Clear();
-            for (int i = 0; i < 5; i++)
-            {
-                var column = new DataGridViewColumn();
-                if (i == 0)
-                    column.HeaderText = "Функция";
-                if (i == 1)
-                    column.HeaderText = "Тип критерия";
-                if (i == 2)
-                    column.HeaderText = "Q";
-                if (i == 3)
-                    column.HeaderText = "S";
-                if (i == 4)
-                    column.HeaderText = "Вес критерия";
-                column.SortMode = DataGridViewColumnSortMode.NotSortable;
-                column.CellTemplate = new DataGridViewTextBoxCell();
-                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-                dgw2.Columns.Add(column);
-            }
-
+            // Создание строк таблицы
             for (int i = 0; i < critCnt; i++)
             {
                 DataGridViewRow row = new DataGridViewRow();
                 row.HeaderCell.Value = Convert.ToString(i + 1) + " критерий";
-                dgw2.Rows.Add(row);
+                dgwFunc.Rows.Add(row);
             }
         }
 
-        private void cbCriteria_SelectedIndexChanged(object sender, EventArgs e)
-        {
-           
-        }
 
+        // Измение видимости параметров Q и S
         private void cbFunction_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Обычная функция
-            // U-образная функция
-            // V-образная функция
-            // Уровневая функция
-            // V-образная функция с порогами безразличия
-
             var q = false;
             var s = false;
 
             switch (cbFunction.SelectedIndex)
             {
-                case 1:
+                case 1: // U-образная функция
                     q = true;
                     break;
-                case 2:
+                case 2: // V-образная функция
                     s = true;
                     break;
-                case 3:
+                case 3:  // Уровневая функция
                     q = true;
                     s = true;
                     break;
-                case 4:
+                case 4: // V-образная функция с порогами безразличия
                     q = true;
                     s = true;
                     break;
             }
 
+            // Измение видимости параметров Q и S
             lblQ.Visible = q;
             nudQ.Visible = q;
 
             lblS.Visible = s;
             nudS.Visible = s;
+        }
+
+        // Создание колонки таблицы
+        private DataGridViewColumn createDataGridViewColumn(string headerText = "")
+        {
+            var column = new DataGridViewColumn();
+
+            column.HeaderText = headerText;
+            column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            column.CellTemplate = new DataGridViewTextBoxCell();
+
+            return column;
         }
     }
 }

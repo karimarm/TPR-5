@@ -5,437 +5,214 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using static OfficeOpenXml.ExcelErrorValue;
 
-namespace ЛР5
+namespace LR5
 {
     public partial class Form2 : Form
     {
-        public Form f = new Form();
+        DataGridView dgwFunc;
+        DataGridView dgwСrit;
 
-        double[,] matrixStepOne;
-        string[,] dgv1;
-
-        List<double[,]> StepOneMatr;
-        List<double[,]> StepTwoMatr;
-        List<double[,]> StepThreeMatr;
+        DataGridView[] dgwStep1_arr;
+        DataGridView[] dgwStep2_arr;
+        DataGridView dgwStep3;
 
         int critCnt;
         int alternativeCnt;
-        string Mess;
 
-        public Form2(int a, int b, double[,] Matr, string[,] Matr2)
+        public Form2(DataGridView dgwСrit, DataGridView dgwFunc)
         {
-            StepOneMatr = new List<double[,]>();
-            StepTwoMatr = new List<double[,]>(); ;
-            StepThreeMatr = new List<double[,]>(); ;
-            Mess = "";
-            alternativeCnt = a;
-            critCnt = b;
-            matrixStepOne = Matr;
-            dgv1 = Matr2;
+            this.dgwСrit = dgwСrit;
+            this.dgwFunc = dgwFunc;
+
+            alternativeCnt = dgwСrit.Rows.Count;
+            critCnt = dgwСrit.Columns.Count;
+
+            dgwStep1_arr = new DataGridView[critCnt];
+            dgwStep2_arr = new DataGridView[critCnt];
+
             InitializeComponent();
-            StepOne();
-            StepTwo();
-            StepThree();
-            StepFour();
+
+            Step1();
+            Step2();
+            Step3();
+            Step4();
         }
 
-        public List<double[,]> GetStepOne()
+        // Шаг #1
+        private void Step1()
         {
-            return StepOneMatr;
-        }
+            tabControl1.TabPages.Clear();
 
-        public List<double[,]> GetStepTwo()
-        {
-            return StepTwoMatr;
-        }
-
-        public List<double[,]> GetStepThree()
-        {
-            return StepThreeMatr;
-        }
-
-        public string GetStepFour()
-        {
-            return Mess;
-        }
-
-        private void StepOne()
-        {
-            tabControl1.Width = 800;
-            tabControl1.Height = 176;
-
-            int cnt1 = tabControl1.TabPages.Count;
-            for (int i = cnt1 - 1; i >= 0; i--)
+            for (int i = 0; i < critCnt; i++)
             {
-                tabControl1.TabPages.RemoveAt(i);
-            }
-
-            for (int j = 0; j < critCnt; j++)
-            {
-                StepOneMatr.Add(new double[alternativeCnt, alternativeCnt]);
-                DataGridView grid = new DataGridView();
-
-                grid.Dock = DockStyle.Fill;
-                grid.AllowUserToAddRows = false;
-                grid.AllowUserToDeleteRows = false;
-                grid.AllowUserToResizeColumns = false;
-                grid.AllowUserToResizeRows = false;
-                grid.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-                grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-                grid.BackgroundColor = System.Drawing.Color.White;
-
+                // Создание новой страницы
                 TabPage tabP = new TabPage();
-                tabP.Text = Convert.ToString(j + 1) + " критерий";
+                tabP.Text = Convert.ToString(i + 1) + " критерий";
                 tabControl1.Controls.Add(tabP);
-                tabP.Controls.Add(grid);
+
+                // Создание новой таблицы
+                DataGridView dgwStep1 = createDataGridView();
+                tabP.Controls.Add(dgwStep1);
+                dgwStep1_arr[i] = dgwStep1;
+
                 tabControl1.Refresh();
 
-                for (int i = 0; i < alternativeCnt; i++)
+                // Создание строк и колонок таблицы
+                for (int j = 0; j < alternativeCnt; j++)
                 {
-                    var column = new DataGridViewColumn();
-                    column.HeaderText = "a " + Convert.ToString(i + 1);
-                    column.SortMode = DataGridViewColumnSortMode.NotSortable;
-                    column.CellTemplate = new DataGridViewTextBoxCell();
-                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-
-                    grid.Columns.Add(column);
+                    var column = createDataGridViewColumn("a " + Convert.ToString(j + 1));
+                    dgwStep1.Columns.Add(column);
 
                     DataGridViewRow row = new DataGridViewRow();
-                    row.HeaderCell.Value = "a" + Convert.ToString(i + 1);
-                    grid.Rows.Add(row);
+                    row.HeaderCell.Value = "a" + Convert.ToString(j + 1);
+                    dgwStep1.Rows.Add(row);
                 }
 
-                for (int i = 0; i < alternativeCnt; i++)
-                {
-                    for (int k = 0; k < alternativeCnt; k++)
-                    {
-                        StepOneMatr[j][i, k] = matrixStepOne[i, j] - matrixStepOne[k, j];
-                        grid[k, i].Value = matrixStepOne[i, j] - matrixStepOne[k, j];
-                    }
-                }
+                // Расчет элементов таблицы
+                for (int row = 0; row < dgwStep1.Rows.Count; row++)
+                    for (int col = 0; col < dgwStep1.Columns.Count; col++)
+                        dgwStep1.Rows[row].Cells[col].Value = Convert.ToInt32(dgwСrit.Rows[row].Cells[i].Value) - Convert.ToInt32(dgwСrit.Rows[col].Cells[i].Value);
             }
         }
 
-        private void StepTwo()
+        // Шаг #2
+        private void Step2()
         {
-            tabControl2.Width = 800;
-            tabControl2.Height = 176;
+            tabControl2.TabPages.Clear();
 
-            int cnt1 = tabControl2.TabPages.Count;
-            for (int i = cnt1 - 1; i >= 0; i--)
+            for (int i = 0; i < critCnt; i++)
             {
-                tabControl2.TabPages.RemoveAt(i);
-            }
-
-            for (int j = 0; j < critCnt; j++)
-            {
-                StepTwoMatr.Add(new double[alternativeCnt, alternativeCnt]);
-                DataGridView grid = new DataGridView();
-
-                grid.Dock = DockStyle.Fill;
-                grid.AllowUserToAddRows = false;
-                grid.AllowUserToDeleteRows = false;
-                grid.AllowUserToResizeColumns = false;
-                grid.AllowUserToResizeRows = false;
-                grid.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-                grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-                grid.BackgroundColor = Color.White;
-
+                // Создание новой страницы
                 TabPage tabP = new TabPage();
-                tabP.Text = "P" + Convert.ToString(j + 1);
+                tabP.Text = "P" + Convert.ToString(i + 1);
                 tabControl2.Controls.Add(tabP);
-                tabP.Controls.Add(grid);
+
+                // Создание новой таблицы
+                DataGridView dgwStep2 = createDataGridView();
+                tabP.Controls.Add(dgwStep2);
+                dgwStep2_arr[i] = dgwStep2;
+
                 tabControl2.Refresh();
 
-                for (int i = 0; i < alternativeCnt; i++)
+                // Создание строк и колонок таблицы
+                for (int j = 0; j < alternativeCnt; j++)
                 {
-                    var column = new DataGridViewColumn();
-                    column.HeaderText = "a" + Convert.ToString(i + 1);
-                    column.SortMode = DataGridViewColumnSortMode.NotSortable;
-                    column.CellTemplate = new DataGridViewTextBoxCell();
-                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-
-                    grid.Columns.Add(column);
+                    var column = createDataGridViewColumn("a " + Convert.ToString(i + 1));
+                    dgwStep2.Columns.Add(column);
 
                     DataGridViewRow row = new DataGridViewRow();
-                    row.HeaderCell.Value = "a" + Convert.ToString(i + 1);
-                    grid.Rows.Add(row);
+                    row.HeaderCell.Value = "a" + Convert.ToString(j + 1);
+                    dgwStep2.Rows.Add(row);
                 }
 
-                DataGridView dgv2 = tabControl1.TabPages[j].Controls[0] as DataGridView;
-
-                for (int i = 0; i < alternativeCnt; i++)
-                {
-                    for (int k = 0; k < alternativeCnt; k++)
-                    {
-                        var val = Func(j, Convert.ToDouble(dgv2[k, i].Value));
-                        StepTwoMatr[j][i, k] = val;
-                        grid[k, i].Value = Math.Round(val, 3);
-                    }
-                }
+                // Расчет элементов таблицы
+                for (int row = 0; row < dgwStep2.Rows.Count; row++)
+                    for (int col = 0; col < dgwStep2.Columns.Count; col++)
+                        dgwStep2.Rows[row].Cells[col].Value = Func(i, Convert.ToInt32(dgwStep1_arr[i].Rows[row].Cells[col].Value));
             }
         }
 
-        private double Func(int J, double d)
+        // Шаг #3
+        private void Step3()
         {
-            string func = dgv1[J, 0].ToString();
-            string funcType = dgv1[J, 1].ToString();
-            double q = 0;
-            double s = 0;
+            tabControl3.TabPages.Clear();
 
-            if (func == "Обычная функция") // без q и s
-            {
-                if (funcType == "Положительно направленный")
-                {
-                    if (d <= 0)
-                        return 0;
-                    else
-                        return 1;
-                }
-                if (funcType == "Отрицательно направленный")
-                {
-                    if (d <= 0)
-                        return 1;
-                    else
-                        return 0;
-                }
-            }
-            if (func == "U-образная функция") //без s
-            {
-                q = Convert.ToDouble(dgv1[J, 2]);
-                if (funcType == "Положительно направленный")
-                {
-                    if (d <= q)
-                        return 0;
-                    else
-                        return 1;
-                }
-                if (funcType == "Отрицательно направленный")
-                {
-                    if (d <= q)
-                        return 1;
-                    else
-                        return 0;
-                }
-            }
-            if (func == "V-образная функция") // без q
-            {
-                s = Convert.ToDouble(dgv1[J, 3]);
-                if (funcType == "Положительно направленный")
-                {
-                    if (d <= 0)
-                        return 0;
-
-                    if (d > 0 && d <= s)
-                        return d/s;
-
-                    if (d > s)
-                        return 1;
-                }
-                if (funcType == "Отрицательно направленный")
-                {
-                    if (d <= 0)
-                        return 1;
-
-                    if (d > 0 && d <= s)
-                        return d/s;
-
-                    if (d > s)
-                        return 0;
-                }
-            }
-            if (func == "Уровневая функция")
-            {
-                q = Convert.ToDouble(dgv1[J, 2]);
-                s = Convert.ToDouble(dgv1[J, 3]);
-                if (funcType == "Положительно направленный")
-                {
-                    if (d <= q)
-                        return 0;
-
-                    if (d > q && d <= s)
-                        return 0.5;
-
-                    if (d > s)
-                        return 1;
-                }
-                if (funcType == "Отрицательно направленный")
-                {
-                    if (d <= q)
-                        return 1;
-
-                    if (d > q && d <= s)
-                        return 0.5;
-
-                    if (d > s)
-                        return 0;
-                }
-            }
-            if (func == "V-образная функция с порогами безразличия")
-            {
-                q = Convert.ToDouble(dgv1[J, 2]);
-                s = Convert.ToDouble(dgv1[J, 3]);
-                if (funcType == "Положительно направленный")
-                {
-                    if (d <= q)
-                        return 0;
-
-                    if (d > q && d <= s)
-                        return (d - q) / (s - q);
-
-                    if (d > s)
-                        return 1;
-                }
-                if (funcType == "Отрицательно направленный")
-                {
-                    if (d <= q)
-                        return 1;
-
-                    if (d > q && d <= s)
-                        return (d - q) / (s - q);
-
-                    if (d > s)
-                        return 0;
-                }
-            }
-            return 0;
-        }
-
-        private void StepThree()
-        {
-            tabControl3.Width = 800;
-            tabControl3.Height = 200;
-
-            int cnt1 = tabControl3.TabPages.Count;
-            for (int i = cnt1 - 1; i >= 0; i--)
-            {
-                tabControl3.TabPages.RemoveAt(i);
-            }
-
-            DataGridView grid = new DataGridView();
-
-            grid.Dock = DockStyle.Fill;
-            grid.AllowUserToAddRows = false;
-            grid.AllowUserToDeleteRows = false;
-            grid.AllowUserToResizeColumns = false;
-            grid.AllowUserToResizeRows = false;
-            grid.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            grid.BackgroundColor = System.Drawing.Color.White;
-
+            // Создание новой страницы
             TabPage tabP = new TabPage();
             tabP.Text = "Индексы предпочтения для каждой альтернативы";
             tabControl3.Controls.Add(tabP);
-            tabP.Controls.Add(grid);
-            tabControl3.Refresh();
-            StepThreeMatr.Add(new double[alternativeCnt + 1, alternativeCnt + 1]);
 
+            // Создание новой таблицы
+            dgwStep3 = createDataGridView();
+            tabP.Controls.Add(dgwStep3);
+
+            tabControl3.Refresh();
+
+            // Создание таблицы для шага #3
             for (int i = 0; i < alternativeCnt + 1; i++)
             {
-                var column = new DataGridViewColumn();
+                string columnHeaderText = "";
                 if (i == alternativeCnt)
-                {
-                    column.HeaderText = "Ф +";
-                }
+                    columnHeaderText = "Ф +";
                 else
-                {
-                    column.HeaderText = "a" + Convert.ToString(i + 1);
-                }
+                    columnHeaderText = "a" + Convert.ToString(i + 1);
 
-                column.SortMode = DataGridViewColumnSortMode.NotSortable;
-                column.CellTemplate = new DataGridViewTextBoxCell();
-                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-
-                grid.Columns.Add(column);
+                var column = createDataGridViewColumn(columnHeaderText);
+                dgwStep3.Columns.Add(column);
 
                 DataGridViewRow row = new DataGridViewRow();
                 if (i == alternativeCnt)
-                {
                     row.HeaderCell.Value = "Ф -";
-                }
                 else
-                {
                     row.HeaderCell.Value = "a" + Convert.ToString(i + 1);
-                }
-                grid.Rows.Add(row);
+                dgwStep3.Rows.Add(row);
             }
 
-            for (int i = 0; i < alternativeCnt; i++)
-            {
-                for (int k = 0; k < alternativeCnt; k++)
+            // Вычисление индексов предпочтения 
+            for (int row = 0; row < alternativeCnt; row++)
+                for (int col = 0; col < alternativeCnt; col++)
                 {
-                    double Elem = 0;
-                    for (int j = 0; j < critCnt; j++)
-                    {
-                        DataGridView dgv2 = tabControl2.TabPages[j].Controls[0] as DataGridView;
+                    double Value = 0;
+                    for (int critIndex = 0; critIndex < critCnt; critIndex++)
+                        Value += Convert.ToDouble(dgwStep2_arr[critIndex].Rows[row].Cells[col].Value) * Convert.ToDouble(dgwFunc.Rows[critIndex].Cells[3].Value);
 
-                        Elem = Elem + Convert.ToDouble(dgv2[k, i].Value) * Convert.ToDouble(dgv1[j, 4]);
-                    }
-                    Elem = Math.Round(Elem, 3);
-                    grid[k, i].Value = Elem;
-                    StepThreeMatr[0][i, k] = Elem;
+                    dgwStep3.Rows[row].Cells[col].Value = Math.Round(Value, 3);
                 }
-            }
-            for (int i = 0; i < alternativeCnt; i++)
+
+            // Вычисление положительных оценок
+            for (int row = 0; row < alternativeCnt; row++)
             {
-                double Elem = 0;
-                for (int k = 0; k < alternativeCnt; k++)
-                {
-                    Elem = Elem + Convert.ToDouble(grid[k, i].Value);
-                }
-                Elem = Math.Round(Elem, 3);
-                grid[alternativeCnt, i].Value = Elem;
-                StepThreeMatr[0][i, alternativeCnt] = Elem;
+                double Value = 0;
+                for (int col = 0; col < alternativeCnt; col++)
+                    Value += Convert.ToDouble(dgwStep3.Rows[row].Cells[col].Value);
+
+                dgwStep3.Rows[row].Cells[alternativeCnt].Value = Math.Round(Value, 3);
             }
 
-            for (int i = 0; i < alternativeCnt; i++)
+            // Вычисление отрицательных оценок
+            for (int col = 0; col < alternativeCnt; col++)
             {
-                double Elem = 0;
-                for (int k = 0; k < alternativeCnt; k++)
-                {
-                    Elem = Elem + Convert.ToDouble(grid[i, k].Value);
-                }
-                Elem = Math.Round(Elem, 3);
-                grid[i, alternativeCnt].Value = Elem;
-                StepThreeMatr[0][alternativeCnt, i] = Elem;
+                double Value = 0;
+                for (int row = 0; row < alternativeCnt; row++)
+                    Value += Convert.ToDouble(dgwStep3.Rows[row].Cells[col].Value);
+
+                dgwStep3.Rows[alternativeCnt].Cells[col].Value = Math.Round(Value, 3);
             }
         }
 
-        private void StepFour()
+        // Шаг #4
+        private void Step4()
         {
-            double[,] Mas = new double[alternativeCnt, alternativeCnt];
+            double[] marksArr = new double[alternativeCnt];
+            string[] alternArr = new string[alternativeCnt];
+
+            // Вычисление чистых оценок
             for (int i = 0; i < alternativeCnt; i++)
             {
-                Mas[1, i] = i + 1;
-            }
-            DataGridView dgv1 = tabControl3.TabPages[0].Controls[0] as DataGridView;
+                double value = Convert.ToDouble(dgwStep3.Rows[i].Cells[alternativeCnt].Value) - Convert.ToDouble(dgwStep3.Rows[alternativeCnt].Cells[i].Value);
 
-            for (int i = 0; i < alternativeCnt; i++)
-            {
-                Mas[0, i] = Convert.ToDouble(dgv1[alternativeCnt, i].Value) - Convert.ToDouble(dgv1[i, alternativeCnt].Value);
+                marksArr[i] = value;
+                alternArr[i] = "a" + Convert.ToString(i + 1);
             }
 
+            // Выводи чистых оценок
             lbFour.Items.Clear();
             for (int i = 0; i < alternativeCnt; i++)
             {
-                lbFour.Items.Add("Φ(a" + Convert.ToString(i + 1) + ") = Φ+(a" + Convert.ToString(i + 1) + ") - Φ-(a" + Convert.ToString(i + 1) + ") = " + Math.Round(Mas[0, i], 4));
+                lbFour.Items.Add("Φ(a" + Convert.ToString(i + 1) + ") = Φ+(a" + Convert.ToString(i + 1) + ") - Φ-(a" + Convert.ToString(i + 1) + ") = " + Math.Round(marksArr[i], 3));
             }
 
-
+            // Сортировка альтернатив
             for (int i = 0; i < alternativeCnt - 1; i++)
             {
-                for (int j = i + 1; j < alternativeCnt; j++)
+                for (int j = i; j < alternativeCnt; j++)
                 {
-                    if (Mas[0, i] < Mas[0, j])
+                    if (marksArr[i] < marksArr[j])
                     {
-                        double temp = Mas[0, i];
-                        Mas[0, i] = Mas[0, j];
-                        Mas[0, j] = temp;
-
-                        double temp1 = Mas[1, i];
-                        Mas[1, i] = Mas[1, j];
-                        Mas[1, j] = temp1;
+                        (marksArr[i], marksArr[j]) = (marksArr[j], marksArr[i]);
+                        (alternArr[i], alternArr[j]) = (alternArr[j], alternArr[i]);
                     }
                 }
             }
@@ -443,10 +220,96 @@ namespace ЛР5
             lbResult.Items.Clear();
             for (int i = 0; i < alternativeCnt; i++)
             {
-                lbResult.Items.Add("a" + Mas[1, i]);
+                lbResult.Items.Add(alternArr[i]);
             }
+        }
 
-            lblResult.Text = Mess;
+        // Получение значения функции
+        private double Func(int critIndex, double d)
+        {
+            string func = dgwFunc.Rows[critIndex].Cells[0].Value.ToString();
+            double q = Convert.ToDouble(dgwFunc.Rows[critIndex].Cells[1].Value);
+            double s = Convert.ToDouble(dgwFunc.Rows[critIndex].Cells[2].Value);
+
+            if (func == "Обычная функция") // без q и s
+            {
+                if (d <= 0)
+                    return 0;
+                else
+                    return 1;
+            }
+            if (func == "U-образная функция") //без s
+            {
+                if (d <= q)
+                    return 0;
+                else
+                    return 1;
+            }
+            if (func == "V-образная функция") // без q
+            {
+                if (d <= 0)
+                    return 0;
+
+                if (d > 0 && d <= s)
+                    return d / s;
+
+                if (d > s)
+                    return 1;
+            }
+            if (func == "Уровневая функция")
+            {
+                if (d <= q)
+                    return 0;
+
+                if (d > q && d <= s)
+                    return 0.5;
+
+                if (d > s)
+                    return 1;
+            }
+            if (func == "V-образная функция с порогами безразличия")
+            {
+                if (d <= q)
+                    return 0;
+
+                if (d > q && d <= s)
+                    return (d - q) / (s - q);
+
+                if (d > s)
+                    return 1;
+            }
+            return 0;
+        }
+
+
+        // Создание таблицы
+        private DataGridView createDataGridView()
+        {
+            DataGridView dgwStep1 = new DataGridView();
+
+            dgwStep1.Dock = DockStyle.Fill;
+            dgwStep1.AllowUserToAddRows = false;
+            dgwStep1.AllowUserToDeleteRows = false;
+            dgwStep1.AllowUserToResizeColumns = false;
+            dgwStep1.AllowUserToResizeRows = false;
+            dgwStep1.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
+            dgwStep1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgwStep1.BackgroundColor = System.Drawing.Color.White;
+
+            return dgwStep1;
+        }
+
+
+        // Создание колонки таблицы
+        private DataGridViewColumn createDataGridViewColumn(string headerText = "")
+        {
+            var column = new DataGridViewColumn();
+
+            column.HeaderText = headerText;
+            column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            column.CellTemplate = new DataGridViewTextBoxCell();
+
+            return column;
         }
     }
 }
